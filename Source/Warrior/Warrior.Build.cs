@@ -19,8 +19,10 @@ public class Warrior : ModuleRules
 			"GameplayStateTreeModule",
 			"UMG",
 			"Slate",
-			"GameplayTags"
-		});
+			"GameplayTags",
+			"GameplayAbilities",
+			"GameplayTasks",
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

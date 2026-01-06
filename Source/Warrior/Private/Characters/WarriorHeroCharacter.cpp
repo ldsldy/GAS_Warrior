@@ -10,6 +10,8 @@
 #include "DataAssets/Input/DataAsset_InputConfig.h"
 #include "Components/Input/WarriorInputComponent.h"
 #include "WarriorGameplayTags.h"
+#include "AbilitySystem/WarriorAttributeSet.h"
+#include "AbilitySystem/WarriorAbilitySystemComponent.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -37,6 +39,17 @@ AWarriorHeroCharacter::AWarriorHeroCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 }
 
+void AWarriorHeroCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (WarriorAbilitySystemComponent && WarriorAttributeSet)
+	{
+		const FString ASCText = FString::Printf(TEXT("Owner: %s, Avatar: %s"), *WarriorAbilitySystemComponent->GetOwnerActor()->GetActorLabel(), *WarriorAbilitySystemComponent->GetAvatarActor()->GetActorLabel());
+		Debug::Print(TEXT("Ability system component valid. ") + ASCText);
+	}
+}
+
 void AWarriorHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	checkf(InputConfigDataAsset, TEXT("InputConfigDataAsset is nullptr in %s"), *GetName());
@@ -58,8 +71,6 @@ void AWarriorHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 void AWarriorHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Debug::Print(TEXT("Working"));
 }
 
 void AWarriorHeroCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -92,6 +103,6 @@ void AWarriorHeroCharacter::Input_Look(const FInputActionValue& InputActionValue
 
 	if (LookAxisVector.Y != 0.f)
 	{
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerPitchInput(-LookAxisVector.Y);
 	}
 }
