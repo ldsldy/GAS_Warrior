@@ -28,5 +28,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
 	TArray<TSubclassOf< UWarriorGameplayAbility>> ReactiveAbilities;
-
 };
