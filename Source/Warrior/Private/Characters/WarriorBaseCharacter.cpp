@@ -29,6 +29,9 @@ void AWarriorBaseCharacter::PossessedBy(AController* NewController)
 	{
 		// 소유자 액터는 논리적 소유자, 아바타 액터는 월드에 존재하는 액터
 		WarriorAbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		// ensureMsgf는 조건이 false일 때 메시지를 출력하고 디버그 중단점을 발생시킴
+		ensureMsgf(!CharacterStartUpData.IsNull(), TEXT("Forgot to Assign start up data to %s"), *GetName());
 	}
 }
 

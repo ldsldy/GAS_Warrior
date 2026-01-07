@@ -9,6 +9,7 @@
 
 class UWarriorAbilitySystemComponent;
 class UWarriorAttributeSet;
+class UDataAsset_StartUpDataBase;
 
 UCLASS()
 class WARRIOR_API AWarriorBaseCharacter : public ACharacter, public IAbilitySystemInterface
@@ -19,13 +20,12 @@ public:
 	// Sets default values for this character's properties
 	AWarriorBaseCharacter();
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	FORCEINLINE UWarriorAbilitySystemComponent* GetWarriorAbilitySystemComponent() const { return WarriorAbilitySystemComponent; }
 	FORCEINLINE UWarriorAttributeSet* GetWarriorAttributeSet() const { return WarriorAttributeSet; }
 
 protected:
-	// ���� ��Ʈ�ѷ��� ���� ������ �� ȣ��˴ϴ�.
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
@@ -34,4 +34,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	TObjectPtr<UWarriorAttributeSet> WarriorAttributeSet;
+
+	// 동기식 로딩 : 로딩이 완료 될때까지 게임이 대기
+	// 비동기식 로딩 : 게임이 계속 진행되는 동안 백그라운드에서 로딩
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;
 };

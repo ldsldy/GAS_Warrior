@@ -12,6 +12,7 @@
 #include "WarriorGameplayTags.h"
 #include "AbilitySystem/WarriorAttributeSet.h"
 #include "AbilitySystem/WarriorAbilitySystemComponent.h"
+#include "DataAssets/StartUpData/DataAsset_HeroStartUpData.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -43,10 +44,14 @@ void AWarriorHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (WarriorAbilitySystemComponent && WarriorAttributeSet)
+	// CharacterStartUpData.IsValid()는 에셋이 메모리에 로드되어 있는지 확인
+	// CharacterStartUpData.IsNull()는 에셋이 할당되지 않았는지 확인
+	if (!CharacterStartUpData.IsNull())
 	{
-		const FString ASCText = FString::Printf(TEXT("Owner: %s, Avatar: %s"), *WarriorAbilitySystemComponent->GetOwnerActor()->GetActorLabel(), *WarriorAbilitySystemComponent->GetAvatarActor()->GetActorLabel());
-		Debug::Print(TEXT("Ability system component valid. ") + ASCText);
+		if (UDataAsset_StartUpDataBase* LoadData = CharacterStartUpData.LoadSynchronous())
+		{
+			LoadData->GiveToAbilitySystemComponent(WarriorAbilitySystemComponent);
+		}
 	}
 }
 
