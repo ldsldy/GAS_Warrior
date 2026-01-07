@@ -2,21 +2,28 @@
 
 
 #include "Components/Combat/PawnCombatComponent.h"
+#include "Items/Weapons/WarriorWeaponBase.h"
+
+#include "WarriorDebugHealper.h"
 
 void UPawnCombatComponent::RegisterSpawnedWeapon(FGameplayTag InWeaponTagToRegister, AWarriorWeaponBase* InWeaponToRegister, bool bRegisterAsEquippedWeapon)
 {
-	// 이미 등록된 태그인지 확인
-	checkf(CharacterCarriedWeaponMap.Contains(InWeaponTagToRegister), TEXT("A named named '%s' is already registered in CharacterCarriedWeaponMap"), *InWeaponTagToRegister.ToString());
+	// 이미 등록된 태그가 아닌지 확인
+	checkf(!CharacterCarriedWeaponMap.Contains(InWeaponTagToRegister), TEXT("A named named '%s' is already registered in CharacterCarriedWeaponMap"), *InWeaponTagToRegister.ToString());
 	// 무기가 유효한지 확인
 	check(InWeaponToRegister);
 
-	CharacterCarriedWeaponMap.Add(InWeaponTagToRegister, InWeaponToRegister);
+	// 무기 등록
+	CharacterCarriedWeaponMap.Emplace(InWeaponTagToRegister, InWeaponToRegister);
 
 	// 무기 등록이 사실이라면
 	if (bRegisterAsEquippedWeapon)
 	{
 		CurrentEquippedWeaponTag = InWeaponTagToRegister;
 	}
+
+	const FString WeaponString = FString::Printf(TEXT("Registered Weapon: %s"), *InWeaponTagToRegister.ToString());
+	Debug::Print(WeaponString);
 }
 
 AWarriorWeaponBase* UPawnCombatComponent::GetCharacterCarriedWeaponByTag(FGameplayTag InWeaponTagToGet) const
