@@ -18,7 +18,6 @@ void UWarriorHeroAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSecond
 {
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
 
-	// 움직이는 중이면 릴렉스 상태에 대한 변수 초기화
 	if (bHasAcceleration)
 	{
 		IdleElapsedTime = 0.f;
