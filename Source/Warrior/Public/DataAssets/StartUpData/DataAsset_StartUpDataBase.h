@@ -9,7 +9,7 @@
 class UWarriorGameplayAbility;
 class UWarriorAbilitySystemComponent;
 /**
- * 
+ * 캐릭터들이 시작할 때 가지는 능력들을 정의하는 데이터 에셋의 기본 클래스
  */
 UCLASS()
 class WARRIOR_API UDataAsset_StartUpDataBase : public UDataAsset
