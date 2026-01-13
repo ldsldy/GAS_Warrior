@@ -12,11 +12,11 @@ class UWarriorAbilitySystemComponent;
 UENUM(BlueprintType)
 enum class EWarriorAbilityActivationPolicy : uint8
 {
-	OnTriggered,
-	OnGiven
+	OnTriggered, // 능력 입력에 의해 발동
+	OnGiven      // 능력 부여 시 즉시 발동
 };
 /**
- * 
+ *  헬퍼 함수들과 커스텀 발동 정책을 포함한 기본 게임플레이 능력 클래스
  */
 UCLASS()
 class WARRIOR_API UWarriorGameplayAbility : public UGameplayAbility
