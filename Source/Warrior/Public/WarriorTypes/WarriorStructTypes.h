@@ -1,10 +1,29 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
+#include "GameplayTagContainer.h"
 #include "WarriorStructTypes.generated.h"
 
 class UWarriorHeroLinkedAnimLayer;
+class UWarriorGameplayAbility;
+class UInputMappingContext;
+
+USTRUCT(BlueprintType)
+struct FWarriorHeroAbilitySet
+{
+	GENERATED_BODY()
+
+public:
+	// 어빌리티에 매핑될 입력 태그 <= 이 태그로 어빌리티를 찾아서 매칭
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "InputTag"))
+	FGameplayTag InputTag;
+
+	// 영웅에서 부여될 어빌리티
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UWarriorGameplayAbility> AbilityToGrant;
+
+	// 유효성 검사 함수
+	bool IsValid() const;
+};
 
 USTRUCT(BlueprintType)
 struct FWarriorHeroWeaponData
@@ -15,5 +34,9 @@ struct FWarriorHeroWeaponData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UWarriorHeroLinkedAnimLayer> WeaponAnimLayerToLink;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputMappingContext> WeaponInputMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (TitleProperty= "InputTag"))
+	TArray<FWarriorHeroAbilitySet> DefaultWeaponAbilities;
 };
