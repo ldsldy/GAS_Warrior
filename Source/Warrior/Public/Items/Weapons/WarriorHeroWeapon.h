@@ -20,12 +20,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	FWarriorHeroWeaponData HeroWeaponData;
 
+	// 어빌리티 스펙 핸들을 저장하는 함수
 	UFUNCTION(BlueprintCallable)
 	void AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles);
 
+	// 어빌리티 스펙 핸들을 반환하는 함수
 	UFUNCTION(BlueprintPure)
 	TArray< FGameplayAbilitySpecHandle> GetGrantedAbilitySpecHandles() const;
 
 private:
+	// 어빌리티 삭제를 위한 어빌리티 스펙 핸들들
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 };
