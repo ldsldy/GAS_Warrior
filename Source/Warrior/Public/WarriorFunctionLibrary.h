@@ -4,16 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "WarriorTypes/WarriorEnumTypes.h"
 #include "WarriorFunctionLibrary.generated.h"
 
 class UWarriorAbilitySystemComponent;
+class UPawnCombatComponent;
 
-UENUM()
-enum class EWarriorConfirmType : uint8
-{
-	Yes,
-	No
-};
 /**
  * 
  */
@@ -40,4 +36,9 @@ public:
 	// 액터가 지정된 게임플레이 태그를 가지고 있는지 확인합니다. (블루프린트용, enum타입을 아웃풋으로 지정하여 여러개의 실행핀을 만든다.)
 	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (DisplayName = "Does Actor Have Tag", ExpandEnumAsExecs = "OutConfirmType"))
 	static void BP_DoesActorHaveTag(AActor* InActor, FGameplayTag TagToCheck, EWarriorConfirmType& OutConfirmType);
+
+	static UPawnCombatComponent* NativeGetPawnCombatComponentFromActor(AActor* InActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (DisplayName = "Get Pawn Combat Component From Actor", ExpandEnumAsExecs = "OutValidType"))
+	static UPawnCombatComponent* BP_GetPawnCombatComponentFromActor(AActor* InActor, EWarriorValidType& OutValidType);
 };

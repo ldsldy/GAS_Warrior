@@ -24,6 +24,8 @@ class WARRIOR_API AWarriorHeroCharacter : public AWarriorBaseCharacter
 public:
 	AWarriorHeroCharacter();
 
+	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 protected:
 	virtual void PossessedBy(AController* NewController) override;
