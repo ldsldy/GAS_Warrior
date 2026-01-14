@@ -8,6 +8,7 @@
 
 class UWarriorGameplayAbility;
 class UWarriorAbilitySystemComponent;
+class UGameplayEffect;
 /**
  * 캐릭터들이 시작할 때 가지는 능력들을 정의하는 데이터 에셋의 기본 클래스
  */
@@ -24,8 +25,11 @@ protected:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
-	TArray<TSubclassOf< UWarriorGameplayAbility>> ActivateOnGivenAbilities;
+	TArray<TSubclassOf<UWarriorGameplayAbility>> ActivateOnGivenAbilities;
 
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
-	TArray<TSubclassOf< UWarriorGameplayAbility>> ReactiveAbilities;
+	TArray<TSubclassOf<UWarriorGameplayAbility>> ReactiveAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
+	TArray<TSubclassOf<UGameplayEffect>> StartUpGameplayEffects;
 };
