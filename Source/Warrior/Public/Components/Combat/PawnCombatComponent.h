@@ -40,6 +40,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Warrior|Combat")
 	void ToggleWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
 
+	// 무기가 대상 액터에 충돌했을 때 호출되는 함수(바인딩)
+	virtual void OnHitTargetActor(AActor* HitActor);
+	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
+
+protected:
+	TArray<AActor*> OverlappedActors;
+
 public:
 	// 현재 장착된 무기 태그
 	UPROPERTY(BlueprintReadWrite, Category = "Warrior|Combat")
