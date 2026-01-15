@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "WarriorTypes/WarriorEnumTypes.h"
 #include "WarriorGameplayAbility.generated.h"
 
 class UPawnCombatComponent;
@@ -32,6 +33,13 @@ protected:
 
 	UFUNCTION(BlueprintPure, Category = "WarriorAbility")
 	UWarriorAbilitySystemComponent* GetWarriorAbilitySystemComponentFromActorInfo() const;
+
+	// 상대에게 게임 플레이 이펙트를 적용하는 함수
+	FActiveGameplayEffectHandle NativeApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle);
+
+	// 블루 프린트에서 실행할 상대에게 게임 플레이 이펙트를 적용할 함수
+	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability", meta = (DisplayName= "Apply Gameplay Effect Spec Handle To Target Actor", ExpandEnumAsExecs = "OutSuccessType"))
+	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EWarriorSuccessType& OutSuccessType);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "WarriorAbility")
