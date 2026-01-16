@@ -24,6 +24,9 @@ class WARRIOR_API UWarriorAttributeSet : public UAttributeSet
 public:
 	UWarriorAttributeSet();
 
+	// 게임플레이 이펙트 실행 전 처리 함수 재정의
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData CurrentHealth;
