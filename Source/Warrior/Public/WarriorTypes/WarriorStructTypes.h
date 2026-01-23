@@ -43,4 +43,7 @@ struct FWarriorHeroWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FScalableFloat WeaponBaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSoftObjectPtr<UTexture2D> SoftWeaponIconTexture;
 };
