@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/WarriorHeroCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -14,6 +13,7 @@
 #include "AbilitySystem/WarriorAbilitySystemComponent.h"
 #include "DataAssets/StartUpData/DataAsset_HeroStartUpData.h"
 #include "Components/Combat/HeroCombatComponent.h"
+#include "Components/UI/HeroUIComponent.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -41,11 +41,23 @@ AWarriorHeroCharacter::AWarriorHeroCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
 	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
+
+	HeroUIComponent = CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
 }
 
 UPawnCombatComponent* AWarriorHeroCharacter::GetPawnCombatComponent() const
 {
 	return HeroCombatComponent;
+}
+
+UPawnUIComponent* AWarriorHeroCharacter::GetPawnUIComponent() const
+{
+	return HeroUIComponent;
+}
+
+UHeroUIComponent* AWarriorHeroCharacter::GetHeroUIComponent() const
+{
+	return HeroUIComponent;
 }
 
 void AWarriorHeroCharacter::PossessedBy(AController* NewController)

@@ -2,8 +2,9 @@
 
 
 #include "DataAssets/StartUpData/DataAsset_HeroStartUpData.h"
-#include "AbilitySystem/Abilities/WarriorGameplayAbility.h"
+#include "AbilitySystem/Abilities/WarriorHeroGameplayAbility.h"
 #include "AbilitySystem/WarriorAbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
 
 void UDataAsset_HeroStartUpData::GiveToAbilitySystemComponent(UWarriorAbilitySystemComponent* InASCToGive, int32 ApplyLevel)
 {

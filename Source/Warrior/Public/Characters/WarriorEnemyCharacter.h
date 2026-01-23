@@ -7,6 +7,8 @@
 #include "WarriorEnemyCharacter.generated.h"
 
 class UEnemyCombatComponent;
+class UEnemyUIComponent;
+class UWidgetComponent;
 /**
  * 
  */
@@ -18,7 +20,12 @@ class WARRIOR_API AWarriorEnemyCharacter : public AWarriorBaseCharacter
 public:
 	AWarriorEnemyCharacter();
 
+	// 전트 컴포넌트
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+
+	// UI 컴포넌트
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 
 	FORCEINLINE UEnemyCombatComponent* GetEnemyCombatComponent() const { return EnemyCombatComponent; }
 
@@ -29,7 +36,12 @@ private:
 	void InitEnemyStartUpData();
 
 protected:
-	UPROPERTY(ViSIBLEaNYWHERE, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UEnemyCombatComponent> EnemyCombatComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UEnemyUIComponent> EnemyUIComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UWidgetComponent> EnemyHealthWidgetComponent;
 };

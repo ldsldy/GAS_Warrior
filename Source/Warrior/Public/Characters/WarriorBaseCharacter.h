@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/PawnCombatInterface.h"
+#include "Interface/PawnUIInterface.h"
 #include "WarriorBaseCharacter.generated.h"
 
 class UWarriorAbilitySystemComponent;
@@ -13,7 +14,7 @@ class UWarriorAttributeSet;
 class UDataAsset_StartUpDataBase;
 
 UCLASS()
-class WARRIOR_API AWarriorBaseCharacter : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface
+class WARRIOR_API AWarriorBaseCharacter : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
 {
 	GENERATED_BODY()
 
@@ -21,9 +22,14 @@ public:
 	// Sets default values for this character's properties
 	AWarriorBaseCharacter();
 
+	// 어빌리티 시스템
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	// 전트 컴포넌트
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+
+	// UI 컴포넌트
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
 
 	FORCEINLINE UWarriorAbilitySystemComponent* GetWarriorAbilitySystemComponent() const { return WarriorAbilitySystemComponent; }
 	FORCEINLINE UWarriorAttributeSet* GetWarriorAttributeSet() const { return WarriorAttributeSet; }

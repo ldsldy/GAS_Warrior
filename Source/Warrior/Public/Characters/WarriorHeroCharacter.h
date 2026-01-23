@@ -15,6 +15,7 @@ class UCameraComponent;
 class UDataAsset_InputConfig;
 class UHeroCombatComponent;
 struct FInputActionValue;
+class UHeroUIComponent;
 
 UCLASS()
 class WARRIOR_API AWarriorHeroCharacter : public AWarriorBaseCharacter
@@ -24,7 +25,12 @@ class WARRIOR_API AWarriorHeroCharacter : public AWarriorBaseCharacter
 public:
 	AWarriorHeroCharacter();
 
+	// 전투 컴포넌트
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+
+	// UI 컴포넌트
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	virtual UHeroUIComponent* GetHeroUIComponent() const override;
 
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 protected:
@@ -43,6 +49,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHeroCombatComponent> HeroCombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHeroUIComponent> HeroUIComponent;
 
 #pragma endregion
 
