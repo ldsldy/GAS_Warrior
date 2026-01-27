@@ -36,7 +36,7 @@ ETeamAttitude::Type AWarriorAIController::GetTeamAttitudeTowards(const AActor& O
 		Cast<const IGenericTeamAgentInterface>(PawnToCheck->GetController());
 
 	// 다른 팀 에이전트의 ID가 이 컨트롤러의 팀 ID와 다르면,
-	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() != GetGenericTeamId())
+	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() < GetGenericTeamId())
 	{
 		return ETeamAttitude::Hostile; // 적대적인 태도로 간주
 	}
@@ -68,11 +68,16 @@ void AWarriorAIController::BeginPlay()
 }
 void AWarriorAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed() && Actor)
+	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
 	{
-		if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())
+		// 블랙보드에 이미 TargetActor가 설정되어 있지 않은 경우
+		if (!BlackboardComponent->GetValueAsObject(FName("TargetActor")))
 		{
-			BlackboardComponent->SetValueAsObject(FName("TargetActor"), Actor);
+			// 감지가 성공적이고 Actor가 유효한 경우
+			if (Stimulus.WasSuccessfullySensed() && Actor)
+			{
+				BlackboardComponent->SetValueAsObject(FName("TargetActor"), Actor);
+			}
 		}
 	}
 }
