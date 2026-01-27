@@ -3,3 +3,12 @@
 
 #include "Components/Combat/EnemyCombatComponent.h"
 
+#include "WarriorDebugHealper.h"
+
+void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
+{
+	if (HitActor)
+	{
+		Debug::Print(GetOwningPawn()->GetActorNameOrLabel() + TEXT(" hit ") + HitActor->GetActorNameOrLabel());
+	}
+}

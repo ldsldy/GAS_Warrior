@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/WarriorAbilitySystemComponent.h"
 #include "Interface/PawnCombatInterface.h"
+#include "GenericTeamAgentInterface.h"
 
 UWarriorAbilitySystemComponent* UWarriorFunctionLibrary::NativeGetWarriorASCFromActor(AActor* InActor)
 {
@@ -62,4 +63,20 @@ UPawnCombatComponent* UWarriorFunctionLibrary::BP_GetPawnCombatComponentFromActo
 
 	OutValidType = CombatComponent ? EWarriorValidType::Valid : EWarriorValidType::Invalid;
 	return CombatComponent;
+}
+
+bool UWarriorFunctionLibrary::IsTargetPawnHostile(APawn* QueryPawn, APawn* TargetPawn)
+{
+	check(QueryPawn && TargetPawn);
+
+	IGenericTeamAgentInterface* QueryTeamAgent = Cast<IGenericTeamAgentInterface>(QueryPawn->GetController());
+	IGenericTeamAgentInterface* TargetTeamAgent = Cast<IGenericTeamAgentInterface>(TargetPawn->GetController());
+	
+	if (QueryTeamAgent && TargetTeamAgent)
+	{
+		// 두 폰의 팀 아이디가 다르면 적대적 관계로 간주하여 true 반환
+		return QueryTeamAgent->GetGenericTeamId() != TargetTeamAgent->GetGenericTeamId();
+	}
+
+	return false;
 }

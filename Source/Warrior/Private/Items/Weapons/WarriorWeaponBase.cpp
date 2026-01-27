@@ -3,6 +3,7 @@
 
 #include "Items/Weapons/WarriorWeaponBase.h"
 #include "Components/BoxComponent.h"
+#include "WarriorFunctionLibrary.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -31,17 +32,14 @@ void AWarriorWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* Overlap
 
 	checkf(WeaponOwningPawn, TEXT("Forgot to assign an Instigator for the weapon %s?"), *GetName());
 
-	// 무기 소유자로 인스티게이터가 설정되었다면
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		// 자기 자신에게 충돌하지 않도록 함
-		if (WeaponOwningPawn != HitPawn)
+		// 때린 적이 적대적이라면
+		if (UWarriorFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
 			// PawnCombatComponent에게 알림
 			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
 		}
-
-		//TODO : Implement hit check for enemy characters
 	}
 }
 
@@ -51,15 +49,13 @@ void AWarriorWeaponBase::OnCollisionBoxEndOverlap(UPrimitiveComponent* Overlappe
 
 	checkf(WeaponOwningPawn, TEXT("Forgot to assign an Instigator for the weapon %s?"), *GetName());
 
-	// 무기 소유자로 인스티게이터가 설정되었다면
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		if (WeaponOwningPawn != HitPawn)
+		// 때린 적이 적대적이라면
+		if (UWarriorFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
 			// PawnCombatComponent에게 알림
 			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
 		}
-
-		//TODO : Implement hit check for enemy characters
 	}
 }
