@@ -59,3 +59,28 @@ void UWarriorAbilitySystemComponent::RemoveGrantedHeroWeaponAbilities(UPARAM(ref
 	// 처리된 핸들들 배열을 비움
 	InSpecHandlesToRemove.Empty();
 }
+
+bool UWarriorAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag AbilityTagToActivate)
+{
+	check(AbilityTagToActivate.IsValid());
+
+	// 어빌리티 태그와 일치하는 모든 어빌리티 스펙을 찾음
+	TArray<FGameplayAbilitySpec*> FoundAbilitySpecs;
+	GetActivatableGameplayAbilitySpecsByAllMatchingTags(AbilityTagToActivate.GetSingleTagContainer(), FoundAbilitySpecs);
+
+	if (!FoundAbilitySpecs.IsEmpty())
+	{
+		// 찾은 어빌리티 스펙들 중에서 랜덤으로 하나 선택
+		const int32 RandomAbilityIndex = FMath::RandRange(0, FoundAbilitySpecs.Num() - 1);
+		FGameplayAbilitySpec* SpecToActivate = FoundAbilitySpecs[RandomAbilityIndex];
+
+		check(SpecToActivate);
+
+		if (!SpecToActivate->IsActive())
+		{
+			return TryActivateAbility(SpecToActivate->Handle);
+		}
+	}
+
+	return false;
+}

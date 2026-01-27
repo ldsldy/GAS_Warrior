@@ -24,7 +24,10 @@ public:
 	void GrantHeroWeaponAbilities(const TArray<FWarriorHeroAbilitySet>& InDefaultWeaponAbilities, int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
 
 	// 영웅에게 어빌리티를 제거, 아웃 파라미터가 아님을 알리는 UPARAM(ref)
-	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability", meta = (ApplyLevel = "1"))
+	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability")
 	void RemoveGrantedHeroWeaponAbilities(UPARAM(ref) TArray<FGameplayAbilitySpecHandle>& InSpecHandlesToRemove);
+
+	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability")
+	bool TryActivateAbilityByTag(FGameplayTag AbilityTagToActivate);
 };
 
