@@ -2,28 +2,14 @@
 
 
 #include "AnimInstance/WarriorBaseAnimInstance.h"
-#include "Characters/WarriorBaseCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "WarriorFunctionLibrary.h"
 
-
-void UWarriorBaseAnimInstance::NativeInitializeAnimation()
+bool UWarriorBaseAnimInstance::DoesOwnerHaveTag(FGameplayTag TagToCheck) const
 {
-	OwningCharacter = Cast<AWarriorBaseCharacter>(TryGetPawnOwner());
-
-	if (OwningCharacter.IsValid())
+	if (APawn* OwningPawn = TryGetPawnOwner())
 	{
-		OwningCharacterMovement = OwningCharacter->GetCharacterMovement();
-	}
-}
-
-void UWarriorBaseAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
-{
-	if(!OwningCharacter.IsValid() || !OwningCharacterMovement)
-	{
-		return;
+		return UWarriorFunctionLibrary::NativeDoesActorHaveTag(OwningPawn, TagToCheck);
 	}
 
-	GroundSpeed = OwningCharacter->GetVelocity().Size2D();
-
-	bHasAcceleration = OwningCharacterMovement->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+	return false;
 }
