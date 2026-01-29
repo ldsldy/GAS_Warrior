@@ -4,6 +4,7 @@
 #include "Components/Combat/EnemyCombatComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "WarriorGameplayTags.h"
+#include "WarriorFunctionLibrary.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -20,12 +21,13 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
 	// TODO:: Implement block check
 	bool bIsValidBlock = false;
 
-	const bool bIsPlayerBlocking = false;
+	const bool bIsPlayerBlocking = UWarriorFunctionLibrary::NativeDoesActorHaveTag(HitActor, WarriorGameplayTags::Player_Status_Blocking);
 	const bool bIsMyAttackUnBlockable = false;
 
+	// 플레이어가 블로킹 중이고, 내 공격이 블로킹 불가능한 공격이 아닐 때 블록 판정 검사
 	if (bIsPlayerBlocking && !bIsMyAttackUnBlockable)
 	{
-		// TODO:: check if the block is valid
+		bIsValidBlock = UWarriorFunctionLibrary::IsValidBlock(GetOwningPawn(), HitActor);
 	}
 
 	FGameplayEventData EventData;
@@ -34,7 +36,11 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
 
 	if (bIsValidBlock)
 	{
-		// TODO:: Handle successful block
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			HitActor,
+			WarriorGameplayTags::Player_Event_SuccessfulBlock,
+			EventData
+		);
 	}
 	else
 	{

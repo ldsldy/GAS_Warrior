@@ -123,3 +123,13 @@ FGameplayTag UWarriorFunctionLibrary::ComputeHitReactDirectionTag(AActor* InAtta
 	}
 	return WarriorGameplayTags::Shared_Status_HitReact_Front;
 }
+
+bool UWarriorFunctionLibrary::IsValidBlock(AActor* InAttacker, AActor* InDefender)
+{
+	check(InAttacker && InDefender);
+
+	const float DotResult = FVector::DotProduct(InAttacker->GetActorForwardVector(), InDefender->GetActorForwardVector());
+
+	// 두 액터의 방향의 각도가 90도 이상이면 블록이 유효하다고 판단
+	return DotResult < -0.1f ? true : false;
+}
