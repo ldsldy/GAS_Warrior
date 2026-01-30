@@ -59,10 +59,12 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 	if (bShouldOverrideRotation)
 	{
 		// 캐릭터가 돌아가야하는 방향 계산
-		const FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(
+		FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(
 			GetHeroCharacterFromActorInfo()->GetActorLocation(),
 			CurrentLockedActor->GetActorLocation()
 		);
+
+		LookAtRot -= FRotator(TargetLockCameraOffsetDistance, 0.f, 0.f); // 카메라 오프셋 보정
 
 		// 컨트롤러가 돌아가야하는 방향 계산
 		const FRotator CurrentControlRot = GetHeroControllerFromActorInfo()->GetControlRotation();
