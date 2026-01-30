@@ -34,12 +34,15 @@ private:
 	void DrawTargetLcokWidget();
 	// 타겟 잠금 위젯 위치 설정
 	void SetTargetLockWidgetPosition();
-
+	// 타겟 잠금 상태에서 캐릭터 무브먼트 설정 초기화
+	void InitTargetLockMovement();
 
 	// 타겟 잠금 능력 취소
 	void CancelTargetLockAbility();
 	// 모든 배열, 위젯 및 포인터 초기화
 	void ClearUp();
+	// 타깃 잠금을 풀면 캐릭터 무브먼트를 리셋
+	void ResetTargetLockMovement();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
 	float BoxTraceDistance = 5000.f;
@@ -59,6 +62,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
 	float TargetLockRotationInterpSpeed = 5.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
+	float TargetLockMaxWalkSpeed = 150.f;
+
 	UPROPERTY()
 	TArray<AActor*> AvailableActorsToLock;
 
@@ -70,4 +76,7 @@ private:
 
 	UPROPERTY()
 	FVector2D TargetLockWidgetSize = FVector2D::ZeroVector;
+
+	UPROPERTY()
+	float CachedDefaultMaxWalkSpeed = 0.f;
 };
