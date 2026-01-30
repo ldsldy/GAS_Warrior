@@ -8,6 +8,7 @@
 
 
 class UWarriorWidgetBase;
+class UInputMappingContext;
 /**
  * 
  */
@@ -23,6 +24,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnTargetLockTick(float DeltaTime);
 
+	UFUNCTION(BlueprintCallable)
+	void SwitchTarget(const FGameplayTag& InSwitchDirectionTag);
+
 private:
 	// 타겟 잠금 시도
 	void TryLockOnTarget();
@@ -30,12 +34,15 @@ private:
 	void GetAvailableActorsToLock();
 	// 잠금 가능한 액터들 중 가장 가까운 액터 반환
 	AActor* GetNearestTargetFromAvailableActors(const TArray<AActor*>& InAvailableActors);
+	// 타겟의 왼쪽과 오른쪽에 있는 액터들 반환
+	void GetAvailableActorsAroundTarget(TArray<AActor*>& OutActorsOnLeft, TArray<AActor*>& OutActorsOnRight);
 	// 타겟 잠금 위젯 그리기
 	void DrawTargetLcokWidget();
 	// 타겟 잠금 위젯 위치 설정
 	void SetTargetLockWidgetPosition();
 	// 타겟 잠금 상태에서 캐릭터 무브먼트 설정 초기화
 	void InitTargetLockMovement();
+	void InitTargetLockMappingContext();
 
 	// 타겟 잠금 능력 취소
 	void CancelTargetLockAbility();
@@ -43,6 +50,7 @@ private:
 	void ClearUp();
 	// 타깃 잠금을 풀면 캐릭터 무브먼트를 리셋
 	void ResetTargetLockMovement();
+	void RestTargetLockMappingContext();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
 	float BoxTraceDistance = 5000.f;
@@ -64,6 +72,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
 	float TargetLockMaxWalkSpeed = 150.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Target Lock")
+	UInputMappingContext* TargetLockMappingContext;
 
 	UPROPERTY()
 	TArray<AActor*> AvailableActorsToLock;

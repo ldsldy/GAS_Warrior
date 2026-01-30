@@ -14,6 +14,7 @@
 #include "WarriorGameplayTags.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 #include "WarriorDebugHealper.h"
 
@@ -21,6 +22,7 @@ void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpec
 {
 	TryLockOnTarget();
 	InitTargetLockMovement();
+	InitTargetLockMappingContext();
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -28,6 +30,7 @@ void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpec
 void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	ResetTargetLockMovement();
+	RestTargetLockMappingContext();
 	ClearUp();
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -71,6 +74,32 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 	}
 }
 
+void UHeroGameplayAbility_TargetLock::SwitchTarget(const FGameplayTag& InSwitchDirectionTag)
+{
+	GetAvailableActorsToLock();
+
+	TArray<AActor*> ActorsOnLeft;
+	TArray<AActor*> ActorsOnRight;
+	AActor* NewTargetToLock = nullptr;
+
+	// 현재 잠금 대상 주변의 액터들 오른쪽, 왼쪽 분류
+	GetAvailableActorsAroundTarget(ActorsOnLeft, ActorsOnRight);
+
+	if (InSwitchDirectionTag == WarriorGameplayTags::Player_Event_SwitchTarget_Left)
+	{
+		NewTargetToLock = GetNearestTargetFromAvailableActors(ActorsOnLeft);
+	}
+	else
+	{
+		NewTargetToLock = GetNearestTargetFromAvailableActors(ActorsOnRight);
+	}
+
+	if (NewTargetToLock)
+	{
+		CurrentLockedActor = NewTargetToLock;
+	}
+}
+
 void UHeroGameplayAbility_TargetLock::TryLockOnTarget()
 {
 	GetAvailableActorsToLock();
@@ -98,6 +127,7 @@ void UHeroGameplayAbility_TargetLock::TryLockOnTarget()
 
 void UHeroGameplayAbility_TargetLock::GetAvailableActorsToLock()
 {
+	AvailableActorsToLock.Empty();
 	TArray<FHitResult> BoxTraceHits;
 
 	UKismetSystemLibrary::BoxTraceMultiForObjects(
@@ -133,6 +163,39 @@ AActor* UHeroGameplayAbility_TargetLock::GetNearestTargetFromAvailableActors(con
 		InAvailableActors,
 		CloseetDistance
 	);
+}
+
+void UHeroGameplayAbility_TargetLock::GetAvailableActorsAroundTarget(TArray<AActor*>& OutActorsOnLeft, TArray<AActor*>& OutActorsOnRight)
+{
+	if (!CurrentLockedActor.IsValid() || AvailableActorsToLock.IsEmpty())
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	// 현재 잠금 대상과 그 주변 액터들의 방향 벡터를 비교하여 왼쪽과 오른쪽으로 분류
+	const FVector PlayerLocation = GetHeroCharacterFromActorInfo()->GetActorLocation();
+	const FVector PlayerToCurrentNormalized = (CurrentLockedActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+
+	for (AActor* AvailableActor : AvailableActorsToLock)
+	{
+		if (!AvailableActor || AvailableActor == CurrentLockedActor.Get()) continue;
+
+		const FVector PlayerToAvailableNormalized = (AvailableActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+
+		const FVector CrossResult = FVector::CrossProduct(PlayerToCurrentNormalized, PlayerToAvailableNormalized);
+	
+		if (CrossResult.Z > 0.f)
+		{
+			// 오른손 법칙에 의해 Z 값이 양수면 오른쪽(적 기준)
+			OutActorsOnRight.AddUnique(AvailableActor);
+		}
+		else
+		{
+			// 음수면 왼쪽(적 기준)
+			OutActorsOnLeft.AddUnique(AvailableActor);
+		}
+	}
 }
 
 void UHeroGameplayAbility_TargetLock::DrawTargetLcokWidget()
@@ -194,6 +257,18 @@ void UHeroGameplayAbility_TargetLock::InitTargetLockMovement()
 	GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = TargetLockMaxWalkSpeed;
 }
 
+void UHeroGameplayAbility_TargetLock::InitTargetLockMappingContext()
+{
+	// 로컬 플레이어 컨트롤러의 향상된 입력 서브시스템 가져오기
+	const ULocalPlayer* LocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem =  ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	check(Subsystem);
+
+	// 매핑 컨텍스트 추가
+	Subsystem->AddMappingContext(TargetLockMappingContext, 3);
+}
+
 void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
 {
 	// 능력 취소
@@ -223,4 +298,20 @@ void UHeroGameplayAbility_TargetLock::ResetTargetLockMovement()
 	{
 		GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = CachedDefaultMaxWalkSpeed;
 	}
+}
+
+void UHeroGameplayAbility_TargetLock::RestTargetLockMappingContext()
+{
+	if (!GetHeroControllerFromActorInfo())
+	{
+		return;
+	}
+	// 로컬 플레이어 컨트롤러의 향상된 입력 서브시스템 가져오기
+	const ULocalPlayer* LocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	check(Subsystem);
+
+	// 매핑 컨텍스트 제거
+	Subsystem->RemoveMappingContext(TargetLockMappingContext);
 }
