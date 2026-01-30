@@ -16,7 +16,24 @@ void UWarriorAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& I
 		// 어빌리티에 해당 입력 태그가 포함되어 있는지 확인
 		if (!AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag)) continue;
 
-		TryActivateAbility(AbilitySpec.Handle);
+		// 토글 가능한 어빌리티이면 활성화/비활성화 처리
+		// 토글 가능한 어빌리티가 아니면 그냥 활성화 시도
+		if(InInputTag.MatchesTag(WarriorGameplayTags::InputTag_Toggleable))
+		{ 
+			if (AbilitySpec.IsActive())
+			{
+				CancelAbilityHandle(AbilitySpec.Handle);
+			}
+			else
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
+		else
+		{
+			TryActivateAbility(AbilitySpec.Handle);
+
+		}
 	}
 }
 
