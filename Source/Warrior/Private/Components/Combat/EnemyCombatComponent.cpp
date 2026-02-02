@@ -22,7 +22,7 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
 	bool bIsValidBlock = false;
 
 	const bool bIsPlayerBlocking = UWarriorFunctionLibrary::NativeDoesActorHaveTag(HitActor, WarriorGameplayTags::Player_Status_Blocking);
-	const bool bIsMyAttackUnBlockable = false;
+	const bool bIsMyAttackUnBlockable = UWarriorFunctionLibrary::NativeDoesActorHaveTag(GetOwningPawn(), WarriorGameplayTags::Enemy_Status_Unblockable);
 
 	// 플레이어가 블로킹 중이고, 내 공격이 블로킹 불가능한 공격이 아닐 때 블록 판정 검사
 	if (bIsPlayerBlocking && !bIsMyAttackUnBlockable)
