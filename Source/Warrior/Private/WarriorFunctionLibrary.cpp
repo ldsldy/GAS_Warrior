@@ -134,3 +134,14 @@ bool UWarriorFunctionLibrary::IsValidBlock(AActor* InAttacker, AActor* InDefende
 	// 두 액터의 방향의 각도가 90도 이상이면 블록이 유효하다고 판단
 	return DotResult < -0.1f ? true : false;
 }
+
+// InInstigator가 InTargetActor에게 InSpecHandle에 정의된 게임플레이 이펙트를 적용합니다.
+bool UWarriorFunctionLibrary::ApplyGameplayEffectSpecHandleToTargetActor(AActor* InInstigator, AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle)
+{
+	UWarriorAbilitySystemComponent* SourceASC = NativeGetWarriorASCFromActor(InInstigator);
+	UWarriorAbilitySystemComponent* TargetASC = NativeGetWarriorASCFromActor(InTargetActor);
+
+	FActiveGameplayEffectHandle ActiveGameplayEffectHandle = SourceASC->ApplyGameplayEffectSpecToTarget(*InSpecHandle.Data, TargetASC);
+
+	return ActiveGameplayEffectHandle.WasSuccessfullyApplied();
+}
